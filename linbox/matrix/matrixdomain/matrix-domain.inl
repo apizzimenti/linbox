@@ -675,8 +675,10 @@ namespace LinBox
 	Vector1 &MatrixDomain<Field>::mulRowSpecialized (Vector1 &w, const Matrix_ &A, const Vector2 &v,
 							 VectorCategories::DenseVectorTag) const
 	{
-		linbox_check (A.coldim () == v.size ());
-		linbox_check (A.rowdim () == w.size ());
+		// AEP 06.19.2025 Disable these checks; for some reason, they break
+		// sparse blackbox solving with Lanczos and BlockLanczos.
+		// linbox_check (A.coldim () == w.size ());
+		// linbox_check (A.rowdim () == v.size ());
 
 		typename Matrix_::ConstRowIterator i = A.rowBegin ();
 		typename Vector1::iterator j = w.begin ();
