@@ -32,6 +32,7 @@
 #include <linbox/linbox-config.h>
 #include "linbox/matrix/transpose-matrix.h"
 #include "linbox/blackbox/dif.h"
+#include <iostream>
 
 namespace LinBox
 {
