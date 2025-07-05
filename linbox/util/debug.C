@@ -30,12 +30,12 @@
 
 namespace LinBox
 {
-	void PreconditionFailed::setErrorStream (std::ostream &stream)
-	{
-		_errorStream = &stream;
-	}
+	// void PreconditionFailed::setErrorStream (std::ostream &stream)
+	// {
+	// 	_errorStream = &stream;
+	// }
 
-	std::ostream *PreconditionFailed::_errorStream;
+	// std::ostream *PreconditionFailed::_errorStream;
 
 	std::ostream *NotImplementedYet::_errorStream ;
 }

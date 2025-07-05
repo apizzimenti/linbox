@@ -41,6 +41,7 @@
 #include "linbox/util/error.h"
 #include <vector>
 #include <list>
+#include <string>
 
 /*! Check an assertion (à la \c std::assert).
  * If in DEBUG mode, throws a \ref PreconditionFailed exception.
@@ -81,58 +82,75 @@ namespace LinBox
 	 \endcode
 	 * The parameters of the constructor help debugging.
 	 */
-	class PreconditionFailed {//: public LinboxError BB: otherwise,  error.h:39 segfaults
-		static std::ostream *_errorStream;
+	class PreconditionFailed : public std::exception {
+		private:
+			const char* Start = "Precondition failed: ";
+			const char* message;
+			const char* function;
+			const char* file;
+			int line;
 
-	public:
-		/*! @internal
-		 * A precondtion failed.
-		 * @param function usually \c __func__, the function that threw the error
-		 * @param line     usually \c __LINE__, the line where it happened
-		 * @param check    a string telling what failed.
-		 */
-		PreconditionFailed (const char *function, int line, const char *check)
-		{
-			if (_errorStream == (std::ostream *) 0)
-				_errorStream = &std::cerr;
+		public:
+			PreconditionFailed(const char* function, int line, const char* check) : message(check), function(function), line(line) { }
+			PreconditionFailed(const char* function, const char* file, int line, const char* check) : message(check), function(function), line(line), file(file) { }
 
-			(*_errorStream) << std::endl << std::endl;
-			(*_errorStream) << "ERROR (" << function << ":" << line << "): ";
-			(*_errorStream) << "Precondition not met:" << check << std::endl;
-		}
-
-		/*! @internal
-		 * A precondtion failed.
-		 * The parameter help debugging. This is not much different from the previous
-		 * except we can digg faster in the file where the exception was triggered.
-		 * @param function usually \c __func__, the function that threw the error
-		 * @param file     usually \c __FILE__, the file where this function is
-		 * @param line     usually \c __LINE__, the line where it happened
-		 * @param check    a string telling what failed.
-		 */
-		PreconditionFailed (const char* function, const char *file, int line, const char *check)
-		{
-			if (_errorStream == (std::ostream *) 0)
-				_errorStream = &std::cerr;
-
-			(*_errorStream) << std::endl << std::endl;
-			(*_errorStream) << "ERROR (at " << function << " in " << file << ':' <<  line << "): " << std::endl;
-			(*_errorStream) << "Precondition not met:" << check << std::endl;
-		}
-
-		static void setErrorStream (std::ostream &stream);
-
-		/*! @internal overload the virtual print of LinboxError.
-		 * @param o output stream
-		 */
-		std::ostream &print (std::ostream &o) const
-		{
-			if (std::ostringstream * str = dynamic_cast<std::ostringstream*>(_errorStream))
-				return o << str->str() ;
-			else
-				throw LinboxError("LinBox ERROR: PreconditionFailed exception is not initialized correctly");
-		}
+			const char* what() const throw () {
+				return "LinBox::PreconditionFailed Error in sparse matrix computation.";
+			}
+			
 	};
+	// class PreconditionFailed {//: public LinboxError BB: otherwise,  error.h:39 segfaults
+	// 	static std::ostream *_errorStream;
+
+	// public:
+	// 	/*! @internal
+	// 	 * A precondtion failed.
+	// 	 * @param function usually \c __func__, the function that threw the error
+	// 	 * @param line     usually \c __LINE__, the line where it happened
+	// 	 * @param check    a string telling what failed.
+	// 	 */
+	// 	PreconditionFailed (const char *function, int line, const char *check)
+	// 	{
+	// 		// if (_errorStream == (std::ostream *) 0)
+	// 		_errorStream = &std::cerr;
+
+	// 		(*_errorStream) << std::endl << std::endl;
+	// 		(*_errorStream) << "ERROR (" << function << ":" << line << "): ";
+	// 		(*_errorStream) << "Precondition not met:" << check << std::endl;
+	// 	}
+
+	// 	/*! @internal
+	// 	 * A precondtion failed.
+	// 	 * The parameter help debugging. This is not much different from the previous
+	// 	 * except we can digg faster in the file where the exception was triggered.
+	// 	 * @param function usually \c __func__, the function that threw the error
+	// 	 * @param file     usually \c __FILE__, the file where this function is
+	// 	 * @param line     usually \c __LINE__, the line where it happened
+	// 	 * @param check    a string telling what failed.
+	// 	 */
+	// 	PreconditionFailed (const char* function, const char *file, int line, const char *check)
+	// 	{
+	// 		// if (_errorStream == (std::ostream *) 0)
+	// 		_errorStream = &std::cerr;
+
+	// 		(*_errorStream) << std::endl << std::endl;
+	// 		(*_errorStream) << "ERROR (at " << function << " in " << file << ':' <<  line << "): " << std::endl;
+	// 		(*_errorStream) << "Precondition not met:" << check << std::endl;
+	// 	}
+
+	// 	static void setErrorStream (std::ostream &stream);
+
+	// 	/*! @internal overload the virtual print of LinboxError.
+	// 	 * @param o output stream
+	// 	 */
+	// 	std::ostream &print (std::ostream &o) const
+	// 	{
+	// 		if (std::ostringstream * str = dynamic_cast<std::ostringstream*>(_errorStream))
+	// 			return o << str->str() ;
+	// 		else
+	// 			throw LinboxError("LinBox ERROR: PreconditionFailed exception is not initialized correctly");
+	// 	}
+	// };
 
 	/*! @internal A function is "not implemented yet(tm)".
 	 * where, why ?
